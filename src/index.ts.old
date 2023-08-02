@@ -1,0 +1,132 @@
+import fs from "fs";
+import * as child_process from "child_process";
+const term = require("terminal-kit").terminal;
+const file = "./data/log.json"
+
+class Entry {
+    message : string;
+    time : number;
+
+    constructor(message: string, time: number) {
+        this.message = message;
+        this.time = time;
+    }
+}
+
+const read_json = () : {[key: number] : Entry} => {
+    return JSON.parse(fs.readFileSync(file, "utf-8"));
+}
+
+const extract_time = (ts : number) : [number, number] => {
+    let h = Math.floor(ts / 1000 / 60 / 60);
+    let m = Math.floor(ts / 1000 / 60) - h * 60;
+    return [h, m];
+}
+
+const save = (ms : number, date : number | undefined = undefined, message_placeholder : string | undefined = undefined) => {
+    let key = date === undefined ? Date.now() : date;
+
+    term.clear();
+    term.moveTo(2, 2)("Completed tasks: ").moveTo(2, 4);
+    term.inputField({default: message_placeholder}, (err: any, message: string) => {
+        let json = read_json();
+        json[key] = new Entry(message, ms);
+
+        fs.writeFileSync(file, JSON.stringify(json, null, 2));
+        term.processExit();
+    });
+}
+
+const record = () => {
+    let start = Date.now();
+    let elapsed = 0;
+    let running = true;
+    let id : NodeJS.Timer;
+
+    term.clear();
+    term.moveTo(2, 4)("p - pause").moveTo(2, 5)("q - stop");
+    term.moveTo(2, 2)("Recording.      ");
+
+    const handler = (key : string) => {
+        switch (key) {
+            case "p":
+            case "P":
+                if (running) {
+                    elapsed = Date.now() - start;
+                    running = false;
+                    term.moveTo(2, 2)("Paused.      ");
+                } else {
+                    start = Date.now();
+                    running = true;
+                    term.moveTo(2, 2)("Recording ... ");
+                }
+                break;
+            case "q":
+            case "Q":
+                if (running) {
+                    save(elapsed + (Date.now() - start));
+                } else {
+                    save(elapsed);
+                }
+                clearInterval(id);
+                term.removeListener("key", handler);
+                break;
+        }
+    }
+
+    term.on("key", handler);
+    id = setInterval(() => {
+        if (!running) return;
+
+        let [h, m] = extract_time(elapsed + Date.now() - start);
+        term.moveTo(2, 7)(`${h}h ${m}m elapsed`);
+    }, 1000 * 60);
+}
+
+const get_ts = async (h_placeholder : string | undefined = undefined, m_placeholder : string | undefined = undefined) : Promise<number> => {
+    term.clear().moveTo(2, 2)("Hours worked: ");
+    let h = Number(await term.inputField({default: h_placeholder}).promise);
+
+    term.moveTo(2, 3)("Minutes worked: ");
+    let m = Number(await term.inputField({default: m_placeholder}).promise);
+
+    return h * 60 * 60 * 1000 + m * 60 * 1000;
+}
+
+const edit_log = async () => {
+    let json = read_json();
+    let key : number = Number(Object.keys(json).pop());
+    let obj = json[key];
+
+    let ts = await get_ts(...extract_time(obj.time).map(t => String(t)));
+    save(ts, key, obj.message);
+}
+
+const optionsMap : { [key: number] : Function } = {
+    0 : record,
+    1 : async () => {
+        let ts = await get_ts();
+        save(ts);
+    },
+    2 : edit_log,
+    3 : ()=> {
+        child_process.exec("nautilus ./data/");
+        term.processExit();
+    }
+}
+
+term.clear();
+term.on("key", (key : string) => {
+    if (key == "CTRL_C") term.processExit();
+})
+
+term("\n Time tracking tool \n");
+term.singleColumnMenu([
+    "Start recording",
+    "Add past log",
+    "Edit last log",
+    "Open folder containing files"
+], (err : any, res : {selectedIndex: number}) => {
+    optionsMap[res.selectedIndex]();
+});
+
