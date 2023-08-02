@@ -34,21 +34,28 @@ const mainMenu : [string, Function][] = [
     }],
     ["View progress", async () => {
         await progressDisplay();
+    }],
+    ["Quit", () => {
+        term.processExit();
     }]
 ]
 
-const main = () => {
+const main = async () => {
     term.clear();
     term.moveTo(2, 2).bold.green("Diplomarbeit time tracking tool");
     term.moveTo(2, 3);
 
-    term.singleColumnMenu(
-        mainMenu.map(x => x[0] + " "),
-        async (err: any, res: {selectedIndex: number}) => {
-            await mainMenu[res.selectedIndex][1]();
-            term.processExit();
-        }
-    )
+    await new Promise<void>(resolve => {
+        term.singleColumnMenu(
+            mainMenu.map(x => x[0] + " "),
+            async (err: any, res: {selectedIndex: number}) => {
+                await mainMenu[res.selectedIndex][1]();
+                resolve();
+            }
+        )
+    });
 }
 
-main();
+(async () => {
+    while (true) await main();
+})();
