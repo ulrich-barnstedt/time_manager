@@ -3,6 +3,7 @@ import {queryForm} from "./queryForm";
 import {readJSON, saveNewEntry, writeJSON} from "./utils";
 import {Entry} from "./Entry";
 import {entryList} from "./entryList";
+import {progressDisplay} from "./progessDisplay";
 export const term = require("terminal-kit").terminal;
 
 term.on("key", (key : string) => {
@@ -15,13 +16,11 @@ const mainMenu : [string, Function][] = [
         let entry = await queryForm(new Entry(time), true);
 
         saveNewEntry(entry);
-        term.processExit();
     }],
     ["Add past log", async () => {
         let entry = await queryForm(new Entry(0), false);
 
         saveNewEntry(entry);
-        term.processExit();
     }],
     ["Edit logs", async () => {
         let index = await entryList();
@@ -29,11 +28,13 @@ const mainMenu : [string, Function][] = [
         let entryStorage = readJSON();
         entryStorage[index] = await queryForm(entryStorage[index], true);
         writeJSON(entryStorage);
-        term.processExit();
     }],
     ["Open folder containing logs", () => {
 
     }],
+    ["View progress", async () => {
+        await progressDisplay();
+    }]
 ]
 
 const main = () => {
@@ -43,8 +44,9 @@ const main = () => {
 
     term.singleColumnMenu(
         mainMenu.map(x => x[0] + " "),
-        (err: any, res: {selectedIndex: number}) => {
-            mainMenu[res.selectedIndex][1]();
+        async (err: any, res: {selectedIndex: number}) => {
+            await mainMenu[res.selectedIndex][1]();
+            term.processExit();
         }
     )
 }
