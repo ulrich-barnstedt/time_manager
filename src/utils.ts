@@ -13,9 +13,12 @@ export const writeJSON = (data: EntryStorage) => {
     fs.writeFileSync(config.filePath, JSON.stringify(data, null, 2));
 }
 
-export const saveNewEntry = (entry: Entry) => {
+export const modifyEntryStorage = async (fn : (es: EntryStorage) => EntryStorage | void | Promise<void> | Promise<EntryStorage>) => {
     let storage = readJSON();
-    storage[Date.now()] = entry;
+
+    let result = await fn(storage);
+    if (result !== undefined) storage = result;
+
     writeJSON(storage);
 }
 

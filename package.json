@@ -2,9 +2,10 @@
   "name": "time_manager",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
     "start": "tsc --build && node build/index.js",
     "precompiled" : "node build/index.js"
   },

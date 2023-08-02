@@ -1,6 +1,6 @@
 import {record} from "./recorder";
 import {queryForm} from "./queryForm";
-import {readJSON, saveNewEntry, writeJSON} from "./utils";
+import {modifyEntryStorage} from "./utils";
 import {Entry} from "./Entry";
 import {entryList} from "./entryList";
 import {progressDisplay} from "./progessDisplay";
@@ -15,25 +15,39 @@ const mainMenu : [string, Function][] = [
         let time = await record();
         let entry = await queryForm(new Entry(time), true);
 
-        saveNewEntry(entry);
+        await modifyEntryStorage(es => {
+            es[Date.now()] = entry;
+        })
     }],
     ["Add past log", async () => {
         let entry = await queryForm(new Entry(0), false);
 
-        saveNewEntry(entry);
+        await modifyEntryStorage(es => {
+            es[Date.now()] = entry;
+        })
     }],
     ["Edit logs", async () => {
         let index = await entryList();
 
-        let entryStorage = readJSON();
-        entryStorage[index] = await queryForm(entryStorage[index], true);
-        writeJSON(entryStorage);
+        await modifyEntryStorage(async (es) => {
+            es[index] = await queryForm(es[index], true);
+        })
+    }],
+    ["Delete log", async () => {
+        let index = await entryList();
+
+        await modifyEntryStorage((es) => {
+            delete es[index];
+        })
     }],
     ["Open folder containing logs", () => {
-
+        // TODO
     }],
     ["View progress", async () => {
         await progressDisplay();
+    }],
+    ["View past logs", async () => {
+        await entryList();
     }],
     ["Quit", () => {
         term.processExit();
