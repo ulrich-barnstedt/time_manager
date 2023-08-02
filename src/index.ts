@@ -2,6 +2,7 @@ import {record} from "./recorder";
 import {queryForm} from "./queryForm";
 import {readJSON, saveNewEntry, writeJSON} from "./utils";
 import {Entry} from "./Entry";
+import {entryList} from "./entryList";
 export const term = require("terminal-kit").terminal;
 
 term.on("key", (key : string) => {
@@ -22,8 +23,13 @@ const mainMenu : [string, Function][] = [
         saveNewEntry(entry);
         term.processExit();
     }],
-    ["Edit logs", () => {
-        // entryList
+    ["Edit logs", async () => {
+        let index = await entryList();
+
+        let entryStorage = readJSON();
+        entryStorage[index] = await queryForm(entryStorage[index], true);
+        writeJSON(entryStorage);
+        term.processExit();
     }],
     ["Open folder containing logs", () => {
 
