@@ -26,6 +26,17 @@ const mainMenu : [string, Function][] = [
             es[Date.now()] = entry;
         })
     }],
+    ["Append time to log", async () => {
+        let index = await entryList();
+        let time = await record();
+
+        await modifyEntryStorage(async (es) => {
+            let entry = es[index];
+            entry.time += time;
+
+            es[index] = await queryForm(entry, true);
+        });
+    }],
     ["Edit logs", async () => {
         let index = await entryList();
 
@@ -47,7 +58,7 @@ const mainMenu : [string, Function][] = [
         await progressDisplay();
     }],
     ["View past logs", async () => {
-        await entryList();
+        await entryList(); // TODO: use form read-only mode
     }],
     ["Quit", () => {
         term.processExit();

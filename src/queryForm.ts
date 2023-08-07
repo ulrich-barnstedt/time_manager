@@ -3,6 +3,7 @@ import {asyncInput} from "./utils";
 import {term} from "./index";
 import {Entry} from "./Entry";
 
+// TODO: implement read-only mode
 export const queryForm = async (entry: Entry, showZeroes: boolean) : Promise<Entry> => {
     term.clear();
 
