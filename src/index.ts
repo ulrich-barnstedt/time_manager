@@ -54,7 +54,7 @@ const mainMenu : [string, Function][] = [
         })
     }],
     ["Open folder containing logs", () => {
-        // TODO
+        exec(config.fileBrowser + " " + config.filePath);
     }],
     ["View progress", async () => {
         await progressDisplay();

@@ -23,7 +23,8 @@ export const dailyTime = (es: EntryStorage) : number => {
 
     return Object.entries(es)
         .filter(([key]) => {
-            let then = new Date(key);
+            let then = new Date(Number(key));
+
             return today.getDate() == then.getDate() &&
                 today.getMonth() == then.getMonth() &&
                 today.getFullYear() == then.getFullYear();
