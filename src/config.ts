@@ -1,10 +1,10 @@
-export default {
+export default { // TODO document
     filePath : "./data/log.json",
     fileBrowser : "nautilus",
-    dailyTarget : 1000 * 60 * 60 * 8,
-    showTarget : true,
+    showDailyTime : true,
     allowJSONCache : false,
     messageShowLength : 45,
     entryListLength : 15,
-    totalHours : 180
+    totalHours : 180,
+    showBanner : true
 }

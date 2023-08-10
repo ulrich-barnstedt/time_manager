@@ -2,7 +2,7 @@ import config from "./config";
 import fs from "fs";
 import {Entry} from "./Entry";
 
-type EntryStorage = {[key: number] : Entry};
+export type EntryStorage = {[key: number] : Entry};
 
 class StorageManager {
     private cache: EntryStorage | undefined;

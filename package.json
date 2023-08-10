@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build",
     "start": "tsc --build && node build/index.js",
-    "precompiled" : "node build/index.js"
+    "precompiled": "node build/index.js"
   },
   "author": "",
   "license": "ISC",

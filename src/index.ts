@@ -69,8 +69,15 @@ const mainMenu : [string, Function][] = [
 
 const main = async () => {
     term.clear();
-    term.moveTo(2, 2).bold.green("Diplomarbeit time tracking tool"); // TODO: add info / stylize
-    term.moveTo(2, 3);
+
+    if (config.showBanner) {
+        term.moveTo(0, 2).bold.green(`  █▀▄ ▀█▀ ▀█▀   ▀▀▄ \n  █ █  █   █    ▄▀  \n  ▀▀   ▀   ▀    ▀▀▀ `);
+        term.moveTo(3, 5).italic.gray("(c) Ulrich Barnstedt 2023")
+        term.moveTo(2, 6);
+    } else {
+        term.moveTo(2, 2).bold.green("Diplomarbeit time tracker 2");
+        term.moveTo(2, 3);
+    }
 
     await new Promise<void>(resolve => {
         term.singleColumnMenu(

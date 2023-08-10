@@ -1,5 +1,7 @@
-import {extractTime} from "./time";
+import {dailyTime, formatTime} from "./time";
 import {term} from "./index";
+import config from "./config";
+import storage from "./storage";
 
 const updateTitle = (recording: boolean) => {
     if (recording) {
@@ -9,11 +11,10 @@ const updateTitle = (recording: boolean) => {
     }
 }
 
+let daily: number;
 const showElapsed = (ts: number) => {
-    let [h, m] = extractTime(ts);
-    term.moveTo(2, 7).cyan.italic(`${h}h ${m}m elapsed   `);
-
-    // TODO: show daily goal
+    term.moveTo(2, 7).cyan.italic(`${formatTime(ts)} elapsed   `);
+    term.moveTo(2, 8).gray.italic(`${formatTime(ts + daily)} daily   `);
 }
 
 const recordRunner = (resolve: (v: number) => void) => {
@@ -21,6 +22,10 @@ const recordRunner = (resolve: (v: number) => void) => {
     let elapsed = 0;
     let running = true;
     let id : NodeJS.Timer;
+
+    if (config.showDailyTime) {
+        daily = dailyTime(storage.get());
+    }
 
     term.clear();
     term.moveTo(2, 4)("p - pause").moveTo(2, 5)("q - stop");
