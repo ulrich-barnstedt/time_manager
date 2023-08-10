@@ -1,7 +1,10 @@
 import {condenseTime, extractTime} from "./time";
-import {asyncInput} from "./utils";
 import {term} from "./index";
 import {Entry} from "./Entry";
+
+const asyncInput = (...params : any[]) : Promise<string> => {
+    return term.inputField(...params).promise;
+}
 
 // TODO: implement read-only mode
 export const queryForm = async (entry: Entry, showZeroes: boolean) : Promise<Entry> => {
@@ -21,7 +24,6 @@ export const queryForm = async (entry: Entry, showZeroes: boolean) : Promise<Ent
     term.moveTo(2, 5).brightGreen.bold("Work log:");
     term.moveTo(1, 7);
     entry.message = await asyncInput({default: entry.message});
-    term("\n");
 
     return entry;
 }

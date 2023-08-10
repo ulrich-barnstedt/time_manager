@@ -1,19 +1,18 @@
-import {readJSON} from "./utils";
 import {extractTime} from "./time";
 import {term} from "./index";
-
-const messageShowLength = 45;
+import config from "./config";
+import storage from "./storage";
 
 export const entryList = () : Promise<number> => {
-    term.clear().moveTo(2, 2).green("Last 10 entries");
+    term.clear().moveTo(2, 2).green(`Last ${config.entryListLength} entries`);
     term.moveTo(2, 3);
 
-    let entries = readJSON();
-    let slicedEntries : [number, string][] = Object.entries(entries).slice(-10).reverse().map(([key, value]) => {
+    let entries = storage.get();
+    let slicedEntries : [number, string][] = Object.entries(entries).slice(-config.entryListLength).reverse().map(([key, value]) => {
         let date = new Date(Number(key));
         let time = extractTime(value.time);
         let formattedTime = `${time[0]}h ${String(time[1]).padStart(2)}m`;
-        let cutMessage = <number>value.message?.length > messageShowLength ? value.message?.slice(0, messageShowLength) + " ..." : value.message;
+        let cutMessage = <number>value.message?.length > config.messageShowLength ? value.message?.slice(0, config.messageShowLength) + " ..." : value.message;
 
         return [Number(key), `${date.toDateString()} | ${formattedTime} | ${cutMessage}`];
     })

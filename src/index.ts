@@ -1,9 +1,11 @@
-import {record} from "./recorder";
+import {recordTime} from "./recorder";
 import {queryForm} from "./queryForm";
-import {modifyEntryStorage} from "./utils";
 import {Entry} from "./Entry";
 import {entryList} from "./entryList";
 import {progressDisplay} from "./progessDisplay";
+import storage from "./storage";
+import {exec} from "child_process";
+import config from "./config";
 export const term = require("terminal-kit").terminal;
 
 term.on("key", (key : string) => {
@@ -12,25 +14,25 @@ term.on("key", (key : string) => {
 
 const mainMenu : [string, Function][] = [
     ["Start recording", async () => {
-        let time = await record();
+        let time = await recordTime();
         let entry = await queryForm(new Entry(time), true);
 
-        await modifyEntryStorage(es => {
+        await storage.with(es => {
             es[Date.now()] = entry;
         })
     }],
     ["Add past log", async () => {
         let entry = await queryForm(new Entry(0), false);
 
-        await modifyEntryStorage(es => {
+        await storage.with(es => {
             es[Date.now()] = entry;
         })
     }],
     ["Append time to log", async () => {
         let index = await entryList();
-        let time = await record();
+        let time = await recordTime();
 
-        await modifyEntryStorage(async (es) => {
+        await storage.with(async (es) => {
             let entry = es[index];
             entry.time += time;
 
@@ -40,14 +42,14 @@ const mainMenu : [string, Function][] = [
     ["Edit logs", async () => {
         let index = await entryList();
 
-        await modifyEntryStorage(async (es) => {
+        await storage.with(async (es) => {
             es[index] = await queryForm(es[index], true);
         })
     }],
     ["Delete log", async () => {
         let index = await entryList();
 
-        await modifyEntryStorage((es) => {
+        await storage.with((es) => {
             delete es[index];
         })
     }],
@@ -67,7 +69,7 @@ const mainMenu : [string, Function][] = [
 
 const main = async () => {
     term.clear();
-    term.moveTo(2, 2).bold.green("Diplomarbeit time tracking tool");
+    term.moveTo(2, 2).bold.green("Diplomarbeit time tracking tool"); // TODO: add info / stylize
     term.moveTo(2, 3);
 
     await new Promise<void>(resolve => {

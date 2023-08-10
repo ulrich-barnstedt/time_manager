@@ -11,7 +11,9 @@ const updateTitle = (recording: boolean) => {
 
 const showElapsed = (ts: number) => {
     let [h, m] = extractTime(ts);
-    term.moveTo(2, 7).cyan.italic(`${h}h ${m}m elapsed`);
+    term.moveTo(2, 7).cyan.italic(`${h}h ${m}m elapsed   `);
+
+    // TODO: show daily goal
 }
 
 const recordRunner = (resolve: (v: number) => void) => {
@@ -58,6 +60,6 @@ const recordRunner = (resolve: (v: number) => void) => {
     }, 1000 * 60);
 }
 
-export const record = async () => {
+export const recordTime = async () => {
     return new Promise(recordRunner);
 }

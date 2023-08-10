@@ -1,15 +1,15 @@
 import {term} from "./index";
-import {readJSON} from "./utils";
 import {extractTime} from "./time";
+import storage from "./storage";
+import config from "./config";
 
-const totalHours = 180;
 const barSize = 36;
 
 export const progressDisplay = async () => {
-    let entryStorage = readJSON();
+    let entryStorage = storage.get();
     let totalTime = Object.entries(entryStorage).map(([key, value]) => value.time).reduce((acc, v) => acc + v, 0);
     let parts = extractTime(totalTime);
-    let progress = parts[0] / totalHours;
+    let progress = parts[0] / config.totalHours;
 
     term.clear();
     term.moveTo(2, 2).bold("Total time worked: ");
@@ -19,6 +19,8 @@ export const progressDisplay = async () => {
     term.bar(progress, {innerSize: barSize, barStyle: term.green.bgGray});
     term.move(2, 0)(`${(progress * 100).toFixed(2)}%`);
     term.moveTo(1, 7);
+
+    // TODO: show daily goal
 
     await new Promise<void>(resolve => {
         term.once("key", resolve);
