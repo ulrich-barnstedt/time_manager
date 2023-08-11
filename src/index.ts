@@ -72,6 +72,10 @@ const mainMenu : [string, Function][] = [
 const main = async () => {
     term.clear();
 
+    if (!config.allowJSONCache) {
+        term.moveTo(34, 2).red.bold("JSON cache disabled.");
+    }
+
     if (config.showBanner) {
         term.moveTo(0, 2).bold().blue(`  █▀▄ ▀█▀ ▀█▀   ▀▀▄ \n  █ █  █   █    ▄▀  \n  ▀▀   ▀   ▀    ▀▀▀ `).styleReset();
         term.moveTo(3, 5).italic.gray("(c) Ulrich Barnstedt 2023")

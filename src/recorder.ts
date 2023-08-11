@@ -2,7 +2,6 @@ import {dailyTime, formatTime} from "./time";
 import {term} from "./index";
 import config from "./config";
 import storage from "./storage";
-import {run} from "node:test";
 
 const updateTitle = (recording: boolean) => {
     if (recording) {
