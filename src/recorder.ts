@@ -2,6 +2,7 @@ import {dailyTime, formatTime} from "./time";
 import {term} from "./index";
 import config from "./config";
 import storage from "./storage";
+import {run} from "node:test";
 
 const updateTitle = (recording: boolean) => {
     if (recording) {
@@ -13,8 +14,8 @@ const updateTitle = (recording: boolean) => {
 
 let daily: number;
 const showElapsed = (ts: number) => {
-    term.moveTo(2, 7).cyan.italic(`${formatTime(ts)} elapsed   `);
-    term.moveTo(2, 8).gray.italic(`${formatTime(ts + daily)} daily   `);
+    term.moveTo(2, 8).cyan.italic(`${formatTime(ts)} elapsed   `);
+    term.moveTo(2, 9).gray.italic(`${formatTime(ts + daily)} daily   `);
 }
 
 const recordRunner = (resolve: (v: number) => void) => {
@@ -28,7 +29,9 @@ const recordRunner = (resolve: (v: number) => void) => {
     }
 
     term.clear();
-    term.moveTo(2, 4)("p - pause").moveTo(2, 5)("q - stop");
+    term.moveTo(2, 4)("p - pause")
+        .moveTo(2, 5)("q - stop")
+        .moveTo(2, 6)("c - cancel");
     updateTitle(running);
 
     const handler = (key : string) => {
@@ -45,6 +48,10 @@ const recordRunner = (resolve: (v: number) => void) => {
 
                 updateTitle(running);
                 break;
+            case "c":
+            case "C":
+                running = false;
+                elapsed = -1;
             case "q":
             case "Q":
                 clearInterval(id);
@@ -55,6 +62,7 @@ const recordRunner = (resolve: (v: number) => void) => {
                 } else {
                     resolve(elapsed);
                 }
+                break;
         }
     }
 

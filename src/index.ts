@@ -15,6 +15,7 @@ term.on("key", (key : string) => {
 const mainMenu : [string, Function][] = [
     ["Start recording", async () => {
         let time = await recordTime();
+        if (time === -1) return;
         let entry = await queryForm(new Entry(time), true);
 
         await storage.with(es => {
@@ -31,6 +32,7 @@ const mainMenu : [string, Function][] = [
     ["Append time to log", async () => {
         let index = await entryList();
         let time = await recordTime();
+        if (time === -1) return;
 
         await storage.with(async (es) => {
             let entry = es[index];
@@ -71,7 +73,7 @@ const main = async () => {
     term.clear();
 
     if (config.showBanner) {
-        term.moveTo(0, 2).bold.green(`  █▀▄ ▀█▀ ▀█▀   ▀▀▄ \n  █ █  █   █    ▄▀  \n  ▀▀   ▀   ▀    ▀▀▀ `);
+        term.moveTo(0, 2).bold().blue(`  █▀▄ ▀█▀ ▀█▀   ▀▀▄ \n  █ █  █   █    ▄▀  \n  ▀▀   ▀   ▀    ▀▀▀ `).styleReset();
         term.moveTo(3, 5).italic.gray("(c) Ulrich Barnstedt 2023")
         term.moveTo(2, 6);
     } else {
@@ -82,6 +84,10 @@ const main = async () => {
     await new Promise<void>(resolve => {
         term.singleColumnMenu(
             mainMenu.map(x => x[0] + " "),
+            {
+                selectedStyle : term.inverse,
+                style: term.bold,
+            },
             async (err: any, res: {selectedIndex: number}) => {
                 await mainMenu[res.selectedIndex][1]();
                 resolve();
