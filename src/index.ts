@@ -32,6 +32,8 @@ const mainMenu : [string, Function][] = [
     }],
     ["Append time to log", async () => {
         let index = await entryList();
+        if (index === -1) return;
+
         let time = await recordTime();
         if (time === -1) return;
 
@@ -44,6 +46,7 @@ const mainMenu : [string, Function][] = [
     }],
     ["Edit log", async () => {
         let index = await entryList();
+        if (index === -1) return;
 
         await storage.with(async (es) => {
             es[index] = await queryForm(es[index], true);
@@ -51,6 +54,7 @@ const mainMenu : [string, Function][] = [
     }],
     ["Delete log", async () => {
         let index = await entryList();
+        if (index === -1) return;
 
         await storage.with((es) => {
             delete es[index];

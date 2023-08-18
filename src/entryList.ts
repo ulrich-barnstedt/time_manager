@@ -9,8 +9,16 @@ export const entryList = () : Promise<number> => {
         .green(`Last ${config.entryListLength} entries`);
     term.moveTo(2, 3);
 
-    let entries = storage.get();
-    let slicedEntries : [number, string][] = Object.entries(entries)
+    let entries = Object.entries(storage.get());
+    if (entries.length === 0) {
+        term.moveTo(2, 4)("No entries.")
+
+        return new Promise(resolve => {
+            term.once("key", () => resolve(-1));
+        })
+    }
+
+    let slicedEntries : [number, string][] = entries
         .slice(-config.entryListLength)
         .reverse()
         .map(([key, value]) => {
