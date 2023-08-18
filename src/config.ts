@@ -11,7 +11,7 @@ export default {
 
     // if JSON should be cached or read from disk everytime
     // (RECOMMENDED)
-    allowJSONCache : false,
+    allowJSONCache : true,
 
     // max length of message when shown in lists
     messageShowLength : 45,

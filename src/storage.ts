@@ -1,5 +1,6 @@
 import config from "./config";
 import fs from "fs";
+import path from "path";
 import {Entry} from "./Entry";
 
 export type EntryStorage = {[key: number] : Entry};
@@ -7,7 +8,16 @@ export type EntryStorage = {[key: number] : Entry};
 class StorageManager {
     private cache: EntryStorage | undefined;
 
+    private ensureFolder () {
+        fs.mkdirSync(path.dirname(config.filePath), {
+            recursive: true
+        })
+    }
+
     private read () : EntryStorage {
+        this.ensureFolder();
+        if (!fs.existsSync(config.filePath)) return {};
+
         return JSON.parse(fs.readFileSync(config.filePath, "utf-8"));
     }
 
@@ -28,6 +38,7 @@ class StorageManager {
             this.cache = data;
         }
 
+        this.ensureFolder();
         fs.writeFileSync(config.filePath, JSON.stringify(data, null, 2));
     }
 

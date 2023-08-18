@@ -3,17 +3,18 @@ import {queryForm} from "./queryForm";
 import {Entry} from "./Entry";
 import {entryList} from "./entryList";
 import {progressDisplay} from "./progessDisplay";
-import storage from "./storage";
 import {exec} from "child_process";
+import storage from "./storage";
 import config from "./config";
 export const term = require("terminal-kit").terminal;
+
 
 term.on("key", (key : string) => {
     if (key == "CTRL_C") term.processExit();
 })
 
 const mainMenu : [string, Function][] = [
-    ["Start recording", async () => {
+    ["Start recording time", async () => {
         let time = await recordTime();
         if (time === -1) return;
         let entry = await queryForm(new Entry(time), true);
@@ -41,7 +42,7 @@ const mainMenu : [string, Function][] = [
             es[index] = await queryForm(entry, true);
         });
     }],
-    ["Edit logs", async () => {
+    ["Edit log", async () => {
         let index = await entryList();
 
         await storage.with(async (es) => {
@@ -55,7 +56,7 @@ const mainMenu : [string, Function][] = [
             delete es[index];
         })
     }],
-    ["Open folder containing logs", () => {
+    ["Open folder containing files", () => {
         exec(config.fileBrowser + " " + config.filePath);
     }],
     ["View progress", async () => {
