@@ -16,6 +16,7 @@ export default {
     allowJSONCache : true,
 
     // max length of message when shown in lists
+    // use -1 to disable limit
     messageShowLength : 45,
 
     // how many logs to show in lists
