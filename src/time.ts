@@ -37,7 +37,7 @@ export const formatTime = (time: number, padding: boolean = false) : string => {
     let parts = extractTime(time);
 
     if (padding) {
-        return `${parts[0]}h ${String(parts[1]).padStart(2)}m`;
+        return `${String(parts[0]).padStart(2)}h ${String(parts[1]).padStart(2)}m`;
     } else {
         return `${parts[0]}h ${parts[1]}m`;
     }

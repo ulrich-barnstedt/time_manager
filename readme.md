@@ -23,7 +23,6 @@ feature to work.
 
 ## TODO features:
 
-- Work categories
 - Log viewing
 - Add option to print out to excel
 
