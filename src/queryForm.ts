@@ -1,6 +1,7 @@
 import {condenseTime, extractTime} from "./time";
 import {term} from "./index";
 import {Entry} from "./Entry";
+import config from "./config";
 
 const asyncInput = (...params : any[]) : Promise<string> => {
     return term.inputField(...params).promise;
@@ -21,8 +22,27 @@ export const queryForm = async (entry: Entry, showZeroes: boolean) : Promise<Ent
     );
     entry.time = condenseTime([hours, minutes]);
 
-    term.moveTo(2, 5).brightGreen.bold("Work log:");
-    term.moveTo(1, 7);
+    term.moveTo(2, 4).brightBlue.bold("Work category: ");
+    term.moveTo(2, 5);
+    let categoryMap = Object.entries(config.categories);
+    let selectedIndex = entry.category === undefined ? config.defaultCategory : entry.category;
+    selectedIndex = categoryMap.findIndex(([k, _]) => +k === selectedIndex);
+    entry.category = await new Promise<number>(resolve => {
+        term.singleColumnMenu(
+            categoryMap.map(([id, c]) => ` ${c.displayId} ${c.name} `),
+            {
+                selectedIndex
+            },
+            (err: any, res: { selectedIndex: number }) => {
+                resolve(+categoryMap[res.selectedIndex][0]);
+            }
+        )
+    });
+    term.moveTo(2, 5).eraseDisplayBelow();
+    term.move(2, 0)(`${config.categories[entry.category].displayId} ${config.categories[entry.category].name}`);
+
+    term.moveTo(2, 7).brightGreen.bold("Work log:");
+    term.moveTo(1, 9);
     entry.message = await asyncInput({default: entry.message});
 
     return entry;

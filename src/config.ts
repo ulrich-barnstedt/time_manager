@@ -28,6 +28,7 @@ export default {
     showBanner : true,
 
     // work categories for entries
+    // keys must be unique, but actual display IDs can be the same
     categories : {
         100: new Category(100, "Projektantrag"),
         200: new Category(200, "Vorstudie"),
