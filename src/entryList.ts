@@ -6,7 +6,7 @@ import storage from "./storage";
 export const entryList = () : Promise<number> => {
     term.clear()
         .moveTo(2, 2)
-        .green(`Last ${config.entryListLength} entries`);
+        .green.bold(`Last ${config.entryListLength} entries`);
     term.moveTo(2, 3);
 
     let entries = Object.entries(storage.get());

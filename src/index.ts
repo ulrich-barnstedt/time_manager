@@ -53,17 +53,6 @@ const mainMenu : [string, Function][] = [
             es[index] = await queryForm(es[index], true);
         })
     }],
-    ["Delete log", async () => {
-        let index = await entryList();
-        if (index === -1) return;
-
-        await storage.with((es) => {
-            delete es[index];
-        })
-    }],
-    ["Open folder containing files", () => {
-        exec(config.fileBrowser + " " + config.filePath);
-    }],
     ["View progress", async () => {
         await progressDisplay();
     }],
@@ -76,9 +65,20 @@ const mainMenu : [string, Function][] = [
         let clipboard = await import("clipboardy");
         await clipboard.default.write(str);
 
-        term.move(1, 1).green("Copied to clipboard");
+        term.move(1, 1).brightBlue.italic("Copied to clipboard");
         await new Promise<void>(resolve => {
             term.once("key", resolve);
+        })
+    }],
+    ["Open folder containing files", () => {
+        exec(config.fileBrowser + " " + config.filePath);
+    }],
+    ["Delete log", async () => {
+        let index = await entryList();
+        if (index === -1) return;
+
+        await storage.with((es) => {
+            delete es[index];
         })
     }],
     ["Quit", () => {

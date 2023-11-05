@@ -5,7 +5,7 @@ import {Entry} from "./data/Entry";
 export const monthPicker = async () : Promise<EntryStorage> => {
     term.clear()
         .moveTo(2, 2)
-        .green(`Select month`);
+        .green.bold(`Select month`);
     term.moveTo(2, 3);
 
     let groups : {[key: string]: EntryStorage} = {};
