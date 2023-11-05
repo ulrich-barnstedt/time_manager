@@ -6,6 +6,7 @@ import {progressDisplay} from "./progessDisplay";
 import {exec} from "child_process";
 import storage from "./storage";
 import config from "./config";
+import {monthPicker, toTabulatedValues} from "./export";
 export const term = require("terminal-kit").terminal;
 
 
@@ -68,6 +69,17 @@ const mainMenu : [string, Function][] = [
     }],
     ["View past logs", async () => {
         await entryList(); // TODO: use form read-only mode
+    }],
+    ["Export logs", async () => {
+        let data = await monthPicker();
+        let str = toTabulatedValues(data);
+        let clipboard = await import("clipboardy");
+        await clipboard.default.write(str);
+
+        term.move(1, 1).green("Copied to clipboard");
+        await new Promise<void>(resolve => {
+            term.once("key", resolve);
+        })
     }],
     ["Quit", () => {
         term.processExit(0);

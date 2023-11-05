@@ -22,7 +22,7 @@ export const dailyTime = (es: EntryStorage) : number => {
     let today = new Date();
 
     return Object.entries(es)
-        .filter(([key]) => {
+        .filter(([key, _]) => {
             let then = new Date(Number(key));
 
             return today.getDate() == then.getDate() &&

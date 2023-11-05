@@ -21,7 +21,7 @@ const recordRunner = (resolve: (v: number) => void) => {
     let start = Date.now();
     let elapsed = 0;
     let running = true;
-    let id : NodeJS.Timer;
+    let id : NodeJS.Timeout;
 
     if (config.showDailyTime) {
         daily = dailyTime(storage.get());
