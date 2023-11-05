@@ -1,6 +1,6 @@
 import {recordTime} from "./recorder";
 import {queryForm} from "./queryForm";
-import {Entry} from "./Entry";
+import {Entry} from "./data/Entry";
 import {entryList} from "./entryList";
 import {progressDisplay} from "./progessDisplay";
 import {exec} from "child_process";
@@ -10,7 +10,7 @@ export const term = require("terminal-kit").terminal;
 
 
 term.on("key", (key : string) => {
-    if (key == "CTRL_C") term.processExit();
+    if (key == "CTRL_C") term.processExit(0);
 })
 
 const mainMenu : [string, Function][] = [
@@ -70,7 +70,7 @@ const mainMenu : [string, Function][] = [
         await entryList(); // TODO: use form read-only mode
     }],
     ["Quit", () => {
-        term.processExit();
+        term.processExit(0);
     }]
 ]
 

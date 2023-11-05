@@ -1,6 +1,6 @@
 import {condenseTime, extractTime} from "./time";
 import {term} from "./index";
-import {Entry} from "./Entry";
+import {Entry} from "./data/Entry";
 import config from "./config";
 
 const asyncInput = (...params : any[]) : Promise<string> => {

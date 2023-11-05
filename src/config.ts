@@ -1,4 +1,4 @@
-import {Category} from "./Category";
+import {Category} from "./data/Category";
 
 export default {
 

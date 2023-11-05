@@ -1,7 +1,7 @@
 import config from "./config";
 import fs from "fs";
 import path from "path";
-import {Entry} from "./Entry";
+import {Entry} from "./data/Entry";
 
 export type EntryStorage = {[key: number] : Entry};
 
